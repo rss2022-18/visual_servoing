@@ -12,29 +12,29 @@ from ackermann_msgs.msg import AckermannDriveStamped
 from visualization_msgs.msg import Marker
 from visual_servoing.msg import ConeLocation, ConeLocationPixel
 
-#The following collection of pixel locations and corresponding relative
-#ground plane locations are used to compute our homography matrix
+# The following collection of pixel locations and corresponding relative
+# ground plane locations are used to compute our homography matrix
 
 # PTS_IMAGE_PLANE units are in pixels
 # see README.md for coordinate frame description
 
 ######################################################
-## DUMMY POINTS -- ENTER YOUR MEASUREMENTS HERE
+# DUMMY POINTS -- ENTER YOUR MEASUREMENTS HERE
 PTS_IMAGE_PLANE = [[-1, -1],
                    [-1, -1],
                    [-1, -1],
-                   [-1, -1]] # dummy points
+                   [-1, -1]]  # dummy points
 ######################################################
 
 # PTS_GROUND_PLANE units are in inches
 # car looks along positive x axis with positive y axis to left
 
 ######################################################
-## DUMMY POINTS -- ENTER YOUR MEASUREMENTS HERE
+# DUMMY POINTS -- ENTER YOUR MEASUREMENTS HERE
 PTS_GROUND_PLANE = [[-1, -1],
                     [-1, -1],
                     [-1, -1],
-                    [-1, -1]] # dummy points
+                    [-1, -1]]  # dummy points
 ######################################################
 
 METERS_PER_INCH = 0.0254
@@ -42,16 +42,21 @@ METERS_PER_INCH = 0.0254
 
 class HomographyTransformer:
     def __init__(self):
-        self.cone_px_sub = rospy.Subscriber("/relative_cone_px", ConeLocationPixel, self.cone_detection_callback)
-        self.cone_pub = rospy.Publisher("/relative_cone", ConeLocation, queue_size=10)
+        self.cone_px_sub = rospy.Subscriber(
+            "/relative_cone_px", ConeLocationPixel, self.cone_detection_callback)
+        self.cone_pub = rospy.Publisher(
+            "/relative_cone", ConeLocation, queue_size=10)
 
+        self.marker_sub = rospy.Subscriber(
+            '/zed/rgb/image_rect_color_mouse_left', ConeLocationPixel, self.pixel_callback)
         self.marker_pub = rospy.Publisher("/cone_marker",
-            Marker, queue_size=1)
+                                          Marker, queue_size=1)
 
         if not len(PTS_GROUND_PLANE) == len(PTS_IMAGE_PLANE):
-            rospy.logerr("ERROR: PTS_GROUND_PLANE and PTS_IMAGE_PLANE should be of same length")
+            rospy.logerr(
+                "ERROR: PTS_GROUND_PLANE and PTS_IMAGE_PLANE should be of same length")
 
-        #Initialize data into a homography matrix
+        # Initialize data into a homography matrix
 
         np_pts_ground = np.array(PTS_GROUND_PLANE)
         np_pts_ground = np_pts_ground * METERS_PER_INCH
@@ -63,21 +68,25 @@ class HomographyTransformer:
 
         self.h, err = cv2.findHomography(np_pts_image, np_pts_ground)
 
+    def pixel_callback(self, msg):
+        u = msg.u
+        v = msg.v
+        self.draw_marker(u, v, msg.header.frame_id)
+
     def cone_detection_callback(self, msg):
-        #Extract information from message
+        # Extract information from message
         u = msg.u
         v = msg.v
 
-        #Call to main function
+        # Call to main function
         x, y = self.transformUvToXy(u, v)
 
-        #Publish relative xy position of object in real world
+        # Publish relative xy position of object in real world
         relative_xy_msg = ConeLocation()
         relative_xy_msg.x_pos = x
         relative_xy_msg.y_pos = y
 
         self.cone_pub.publish(relative_xy_msg)
-
 
     def transformUvToXy(self, u, v):
         """
