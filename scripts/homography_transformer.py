@@ -69,6 +69,7 @@ class HomographyTransformer:
         self.h, err = cv2.findHomography(np_pts_image, np_pts_ground)
 
     def pixel_callback(self, msg):
+        print("Pixel callback called!")
         u = msg.u
         v = msg.v
         rospy.loginfo("U:%f, V:%f", u, v)
