@@ -37,7 +37,8 @@ def cd_color_segmentation(img, template):
 	ORANGE_THRESHOLD = ([5,50,50], [15,255,255])  #HSV (Hue, Saturation, Value)   For Orange color
 	bounding_box = ((0,0),(0,0))
 
-	frame = cv2.imread(img)
+	#frame = cv2.imread(img)
+	frame = img
 	#Convert BGR to HSV
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
