@@ -8,6 +8,7 @@ from cv_bridge import CvBridge, CvBridgeError
 
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
+from geometry_msgs.msg import Point
 from ackermann_msgs.msg import AckermannDriveStamped
 from visualization_msgs.msg import Marker
 from visual_servoing.msg import ConeLocation, ConeLocationPixel
@@ -48,7 +49,7 @@ class HomographyTransformer:
             "/relative_cone", ConeLocation, queue_size=10)
 
         self.marker_sub = rospy.Subscriber(
-            '/zed/zed_node/rgb/image_rect_color_mouse_left', ConeLocationPixel, self.pixel_callback)
+            '/zed/zed_node/rgb/image_rect_color_mouse_left', Point, self.pixel_callback)
         self.marker_pub = rospy.Publisher("/cone_marker",
                                           Marker, queue_size=1)
 
@@ -70,10 +71,10 @@ class HomographyTransformer:
 
     def pixel_callback(self, msg):
         print("Pixel callback called!")
-        u = msg.u
-        v = msg.v
+        u = msg.x
+        v = msg.y
         rospy.loginfo("U:%f, V:%f", u, v)
-        self.draw_marker(u, v, msg.header.frame_id)
+        self.draw_marker(u, v, 'zed_camera_center')
 
     def cone_detection_callback(self, msg):
         # Extract information from message
