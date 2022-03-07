@@ -52,23 +52,26 @@ class ConeDetector():
         image = self.bridge.imgmsg_to_cv2(image_msg, "bgr8")
         debug_msg = self.bridge.cv2_to_imgmsg(image, "bgr8")
 
-        bbox = cd_color_segmentation(image, None)  # code could be refactored to remove the None template
+        # code could be refactored to remove the None template
+        bbox = cd_color_segmentation(image, None)
         tleft = bbox[0]  # top left of bounding box
         bright = bbox[1]  # bottom right of bounding box
-        x_avg = (tleft[0] + bright[0]) // 2  # calculates middle pixel across x-axis
-        y_bottom = bright[1]  # the y pixel coordinate of the bottom of the bounding box
+        # calculates middle pixel across x-axis
+        x_avg = (tleft[0] + bright[0]) // 2
+        # the y pixel coordinate of the bottom of the bounding box
+        y_bottom = bright[1]
 
         cone_loc = ConeLocationPixel()
         cone_loc.u = x_avg
         cone_loc.v = y_bottom
-        self.cone_pub.pulish(cone_loc)
+        self.cone_pub.publish(cone_loc)
         self.debug_pub.publish(debug_msg)
 
     def image_print(self, img):
         """
-    	Helper function to print out images, for debugging. Pass them in as a list.
-    	Press any key to continue.
-    	"""
+        Helper function to print out images, for debugging. Pass them in as a list.
+        Press any key to continue.
+        """
         cv2.imshow("image", img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
@@ -108,7 +111,8 @@ class ConeDetector():
         mask = cv2.inRange(hsv, lower_bound, upper_bound)
         bounding_box = ((0, 0), (0, 0))
 
-        _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        _, contours, _ = cv2.findContours(
+            mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         if len(contours) != 0:
             print(contours)

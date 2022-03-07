@@ -21,10 +21,10 @@ from visual_servoing.msg import ConeLocation, ConeLocationPixel
 
 ######################################################
 # DUMMY POINTS -- ENTER YOUR MEASUREMENTS HERE
-PTS_IMAGE_PLANE = [[309, 211],
-                   [381, 212],
-                   [374, 197],
-                   [316, 197]]  # dummy points
+PTS_IMAGE_PLANE = [[253, 203],
+                   [471, 201],
+                   [281, 178],
+                   [441, 245]]  # dummy points
 ######################################################
 
 # PTS_GROUND_PLANE units are in inches
@@ -32,10 +32,10 @@ PTS_IMAGE_PLANE = [[309, 211],
 
 ######################################################
 # DUMMY POINTS -- ENTER YOUR MEASUREMENTS HERE
-PTS_GROUND_PLANE = [[-4.25, 39.3701],
-                    [4.25, 39.3701],
-                    [-4.25, 50.3701],
-                    [4.25, 50.3701]]  # dummy points
+PTS_GROUND_PLANE = [[-12.75, 39.3701],
+                    [12.75, 39.3701],
+                    [-12.75, 50.3701],
+                    [4.25, 23.0]]  # dummy points
 ######################################################
 
 METERS_PER_INCH = 0.0254
@@ -74,6 +74,10 @@ class HomographyTransformer:
         u = msg.x
         v = msg.y
         rospy.loginfo("U:%f, V:%f", u, v)
+        x, y = self.transformUvToXy(u, v)
+        rospy.loginfo('X(m):%f, Y(m):%f', x, y)
+        rospy.loginfo('X(in):%f, Y(in):%f', x *
+                      (1/METERS_PER_INCH), y*(1/METERS_PER_INCH))
         self.draw_marker(u, v, 'zed_camera_center')
 
     def cone_detection_callback(self, msg):
@@ -88,7 +92,6 @@ class HomographyTransformer:
         relative_xy_msg = ConeLocation()
         relative_xy_msg.x_pos = x
         relative_xy_msg.y_pos = y
-
         self.cone_pub.publish(relative_xy_msg)
 
     def transformUvToXy(self, u, v):
