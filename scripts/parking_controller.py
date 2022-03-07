@@ -25,10 +25,10 @@ class ParkingController():
         self.error_pub = rospy.Publisher("/parking_error",
             ParkingError, queue_size=10)
 
-        self.desired_velocity = 1.0 #[m/s]
+        self.desired_velocity = 0.5  #[m/s]
         self.L = 0.35 #[m]
-        self.lookahead = 0.70 # [m], variable
-        self.parking_distance = .75 # meters; try playing with this number!
+        self.lookahead = 0.2 # [m], variable
+        self.parking_distance = .25 # meters; try playing with this number!
         self.relative_x = 0
         self.relative_y = 0
 
