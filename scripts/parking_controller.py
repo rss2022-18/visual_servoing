@@ -26,7 +26,6 @@ class ParkingController():
             ParkingError, queue_size=10)
 
         self.desired_velocity = 1.0  #[m/s]
-        # TODO: Ask Jose what L means
         self.L = 0.35  #[m]
         self.lookahead = 0.90  # [m], variable
         self.parking_distance = .75  # meters; try playing with this number!
@@ -75,7 +74,6 @@ class ParkingController():
         # want to face the cone, not just back into it. 
         if abs(angle_to_cone) > np.pi*0.5:
             #just turn in place
-            # TODO: turning in place is possible in simulation, but what about real life?
             if angle_to_cone > np.pi*0.5:
                 delta = np.pi*0.25
                 print('spinning right')
