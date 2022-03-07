@@ -45,8 +45,8 @@ class HomographyTransformer:
     def __init__(self):
         self.cone_px_sub = rospy.Subscriber(
             "/relative_cone_px", ConeLocationPixel, self.cone_detection_callback)
-        self.cone_pub = rospy.Publisher(
-            "/relative_cone", ConeLocation, queue_size=10)
+        # self.cone_pub = rospy.Publisher(
+        #     "/relative_cone", ConeLocation, queue_size=10)
 
         # self.marker_sub = rospy.Subscriber(
         #     '/zed/zed_node/rgb/image_rect_color_mouse_left', Point, self.pixel_callback)
@@ -78,7 +78,7 @@ class HomographyTransformer:
         rospy.loginfo('X(m):%f, Y(m):%f', x, y)
         rospy.loginfo('X(in):%f, Y(in):%f', x *
                       (1/METERS_PER_INCH), y*(1/METERS_PER_INCH))
-        self.draw_marker(u, v, 'zed_camera_center')
+        self.draw_marker(x, y, 'zed_camera_center')
 
     def cone_detection_callback(self, msg):
         # Extract information from message
@@ -93,6 +93,7 @@ class HomographyTransformer:
         relative_xy_msg.x_pos = x
         relative_xy_msg.y_pos = y
         self.cone_pub.publish(relative_xy_msg)
+        self.draw_marker(x, y, 'zed_camera_center')
 
     def transformUvToXy(self, u, v):
         """

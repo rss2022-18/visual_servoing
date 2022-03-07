@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
+from re import M
 import numpy as np
 import rospy
 
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 
+from visualization_msgs.msg import Marker
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Point  # geometry_msgs not in CMake file
 from visual_servoing.msg import ConeLocationPixel
@@ -114,7 +116,7 @@ class ConeDetector():
             mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         if len(contours) != 0:
-            print(contours)
+            # print(contours)
             c = max(contours, key=cv2.contourArea)
             x, y, w, h = cv2.boundingRect(c)
             bounding_box = ((x, y), (x + w, y + h))
