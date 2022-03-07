@@ -8,7 +8,7 @@ from turtle import distance
 
 from visual_servoing.msg import ConeLocation, ParkingError
 from ackermann_msgs.msg import AckermannDriveStamped
-
+# TODO: fix launch file to account for safety controller too.
 class ParkingController():
     """
     A controller for parking in front of a cone.
@@ -25,10 +25,11 @@ class ParkingController():
         self.error_pub = rospy.Publisher("/parking_error",
             ParkingError, queue_size=10)
 
-        self.desired_velocity = 1.0 #[m/s]
-        self.L = 0.35 #[m]
-        self.lookahead = 0.70 # [m], variable
-        self.parking_distance = .75 # meters; try playing with this number!
+        self.desired_velocity = 1.0  #[m/s]
+        # TODO: Ask Jose what L means
+        self.L = 0.35  #[m]
+        self.lookahead = 0.90  # [m], variable
+        self.parking_distance = .75  # meters; try playing with this number!
         self.relative_x = 0
         self.relative_y = 0
 
@@ -44,13 +45,12 @@ class ParkingController():
 
         #################################
 
-        #for now, drive directly to the cone and stay there. 
         # we implement the pure pursuit controller
         # port over the pure pursuit from before. 
 
         #distance 
         distance_from_cone = sqrt(self.relative_x**2 + self.relative_y**2).real
-        angle_to_cone      = atan2(self.relative_y, self.relative_x)
+        angle_to_cone = atan2(self.relative_y, self.relative_x)
         numerator = 2*self.L*sin(angle_to_cone).real
         denominator = self.lookahead.real
 
@@ -60,11 +60,10 @@ class ParkingController():
         # velocity scaling, according to angle. 
         vel = abs(self.desired_velocity*cos(angle_to_cone).real)
 
-        if abs(vel) < 0.25: #prevent sticking and not moving. 
+        if abs(vel) < 0.25:  # prevent sticking and not moving.
             vel = 0.25
-        
 
-        if distance_from_cone < self.parking_distance*2 : #start slowing down
+        if distance_from_cone < self.parking_distance*2:  # start slowing down
             slowdown_normalized = (distance_from_cone-self.parking_distance)/self.parking_distance
             vel = vel*(1-slowdown_normalized)
 
@@ -74,6 +73,7 @@ class ParkingController():
         # want to face the cone, not just back into it. 
         if abs(angle_to_cone) > np.pi*0.5:
             #just turn in place
+            # TODO: turning in place is possible in simulation, but what about real life?
             if angle_to_cone > np.pi*0.5:
                 delta = np.pi*0.25
                 print('spinning right')
@@ -106,10 +106,11 @@ class ParkingController():
         #################################
         error_msg.x_error = float(self.relative_x)
         error_msg.y_error = float(self.relative_y)
-        #print(sqrt((self.relative_x)**2 + (self.relative_y)**2).real)
+        # print(sqrt((self.relative_x)**2 + (self.relative_y)**2).real)
         error_msg.distance_error = float((sqrt((self.relative_x)**2 + (self.relative_y)**2)).real)
         
         self.error_pub.publish(error_msg)
+
 
 if __name__ == '__main__':
     try:

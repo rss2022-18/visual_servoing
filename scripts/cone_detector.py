@@ -24,7 +24,9 @@ class ConeDetector():
 
     def __init__(self):
         # toggle line follower vs cone parker
-        self.LineFollower = False
+        # TODO: not sure what this boolean is supposed to do?
+        #  as far as I can tell, the modfications for line following take place in parking_controller, not here
+        self.LineFollower = True
 
         # Subscribe to ZED camera RGB frames
         self.cone_pub = rospy.Publisher(
@@ -51,7 +53,7 @@ class ConeDetector():
 
         image = self.bridge.imgmsg_to_cv2(image_msg, "bgr8")
         debug_msg = self.bridge.cv2_to_imgmsg(image, "bgr8")
-
+        #TODO: Ask Rei what format image should be in to use his function
         bbox = cd_color_segmentation(image, None)  # code could be refactored to remove the None template
         tleft = bbox[0]  # top left of bounding box
         bright = bbox[1]  # bottom right of bounding box
