@@ -66,10 +66,12 @@ class ParkingController():
 
         if distance_from_cone < self.parking_distance*2 : #start slowing down
             slowdown_normalized = (distance_from_cone-self.parking_distance)/self.parking_distance
-            vel = vel*(1-slowdown_normalized)
+            vel = vel*(slowdown_normalized)
 
-            if distance_from_cone < self.parking_distance:
+            if distance_from_cone >= self.parking_distance-0.05 and distance_from_cone <= self.parking_distance +0.05:
                 vel = 0
+            elif distance_from_cone < self.parking_distance:
+                vel = -vel
 
         # want to face the cone, not just back into it. 
         if abs(angle_to_cone) > np.pi*0.5:
