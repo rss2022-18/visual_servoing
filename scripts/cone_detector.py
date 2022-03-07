@@ -114,7 +114,6 @@ class ConeDetector():
             print(contours)
             c = max(contours, key=cv2.contourArea)
             x, y, w, h = cv2.boundingRect(c)
-            # TODO: make sure the bounding box is correctly formatted, check-in with Rei
             bounding_box = ((x, y), (x + w, y + h))
 
         ########### YOUR CODE ENDS HERE ###########
