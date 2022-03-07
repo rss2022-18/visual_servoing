@@ -34,7 +34,12 @@ def cd_color_segmentation(img, template):
 				(x1, y1) is the top left of the bbox and (x2, y2) is the bottom right of the bbox
 	"""
 	########## YOUR CODE STARTS HERE ##########
-	ORANGE_THRESHOLD = ([5,50,50], [15,255,255])  #HSV (Hue, Saturation, Value)   For Orange color
+	#ORANGE_THRESHOLD = ([5,50,50], [15,255,255])
+	# 
+	# 
+	# 
+	#   #HSV (Hue, Saturation, Value)   For Orange color
+	ORANGE_THRESHOLD = ([5,50,50], [15,255,255])
 	bounding_box = ((0,0),(0,0))
 
 	#frame = cv2.imread(img)
@@ -49,15 +54,15 @@ def cd_color_segmentation(img, template):
 	upper_bound = np.array(ORANGE_THRESHOLD[1])
 
 	#Threshold the HSV mage to get only green color
-	#Mask contains a white on black image where white pixels represent that a value was withing our orange Threshold.
+	#Mask contains a white on black image where white pixels represent that a value was within our orange Threshold.
 
 	mask = cv2.inRange(hsv,lower_bound,upper_bound)
-
 	bounding_box = ((0,0),(0,0))
 
-	contours , _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+	_, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 	if len(contours)!=0:
+		print(contours)
 		c = max(contours, key = cv2.contourArea)
 		x,y,w,h = cv2.boundingRect(c)
 		bounding_box = ((x,y),(x+w,y+h))
