@@ -93,7 +93,7 @@ class HomographyTransformer:
         relative_xy_msg.x_pos = y
         relative_xy_msg.y_pos = -1*x
         self.cone_pub.publish(relative_xy_msg)
-        # TODO: does the next line need to have it's coordinated flipped too?
+        # TODO: does the next line need to have its coordinates flipped too?
         self.draw_marker(x, y, 'zed_camera_center')
 
     def transformUvToXy(self, u, v):

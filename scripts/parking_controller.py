@@ -72,6 +72,7 @@ class ParkingController():
             if distance_from_cone >= self.parking_distance-0.05 and distance_from_cone <= self.parking_distance +0.05:
                 vel = 0
             elif distance_from_cone < self.parking_distance:
+                # shouldn't this be self.parking_distance - 0.05?
                 vel = -vel
 
         # want to face the cone, not just back into it. 
