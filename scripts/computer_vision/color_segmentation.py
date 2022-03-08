@@ -41,11 +41,31 @@ def cd_color_segmentation(img, template):
 	# 
 	# 
 	#   #HSV (Hue, Saturation, Value)   For Orange color
-	ORANGE_THRESHOLD = ([5,50,50], [15,255,255])
+	ORANGE_THRESHOLD = ([5,80,100], [18,255,255])
 	bounding_box = ((0,0),(0,0))
+	
 
-	#frame = cv2.imread(img)
 	frame = img
+	# Taking a matrix of size 5 as the kernel
+	kernel = np.ones((5,5), np.uint8)
+
+	# The first parameter is the original image,
+	# kernel is the matrix with which image is
+	# convolved and third parameter is the number
+	# of iterations, which will determine how much
+	# you want to erode/dilate a given image.
+	img_erosion = cv2.erode(frame, kernel, iterations=1)
+	img_dilation = cv2.dilate(img_erosion, kernel, iterations=2)
+	# image_print(frame)
+    # image_print(img_erosion)
+	# image_print(img_dilation)
+
+	frame = img_dilation
+	
+	# image_print([])
+	# Taking a matrix of size 5 as the kernel
+
+
 	#Convert BGR to HSV
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -55,16 +75,18 @@ def cd_color_segmentation(img, template):
 	lower_bound = np.array(ORANGE_THRESHOLD[0])
 	upper_bound = np.array(ORANGE_THRESHOLD[1])
 
-	#Threshold the HSV mage to get only green color
-	#Mask contains a white on black image where white pixels represent that a value was within our orange Threshold.
+
 
 	mask = cv2.inRange(hsv,lower_bound,upper_bound)
+	# image_print(mask)
 	bounding_box = ((0,0),(0,0))
+
+
+
 
 	_, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 	if len(contours)!=0:
-		print(contours)
 		c = max(contours, key = cv2.contourArea)
 		x,y,w,h = cv2.boundingRect(c)
 		bounding_box = ((x,y),(x+w,y+h))
@@ -75,5 +97,4 @@ def cd_color_segmentation(img, template):
 
 	########### YOUR CODE ENDS HERE ###########
 
-	# Return bounding box
 	return bounding_box
