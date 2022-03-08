@@ -37,6 +37,9 @@ class ParkingController():
         self.relative_y = msg.y_pos
         drive_cmd = AckermannDriveStamped()
 
+        print('Relative x: ' + str(self.relative_x))
+        print('Relative y:' + str(self.relative_y))
+
         #################################
 
         # YOUR CODE HERE
@@ -78,12 +81,12 @@ class ParkingController():
             #just turn in place
             if angle_to_cone > np.pi*0.5:
                 delta = np.pi*0.25
-                print('spinning right')
+                #print('spinning right')
 
             elif angle_to_cone < -np.pi*0.5:
                 delta = -np.pi*0.25
-                print('spinning left ')
-
+                #print('spinning left ')
+#
         drive_cmd.drive.steering_angle = delta
         drive_cmd.drive.speed          = vel
         
