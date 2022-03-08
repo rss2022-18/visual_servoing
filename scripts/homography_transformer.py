@@ -91,7 +91,7 @@ class HomographyTransformer:
         # Publish relative xy position of object in real world
         relative_xy_msg = ConeLocation()
         relative_xy_msg.x_pos = y
-        relative_xy_msg.y_pos = x
+        relative_xy_msg.y_pos = -1*x
         self.cone_pub.publish(relative_xy_msg)
         # TODO: does the next line need to have it's coordinated flipped too?
         self.draw_marker(x, y, 'zed_camera_center')

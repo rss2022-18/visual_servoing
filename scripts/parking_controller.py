@@ -27,8 +27,8 @@ class ParkingController():
 
         self.desired_velocity = 0.5  #[m/s]
         self.L = 0.35 #[m]
-        self.lookahead = 0.2 # [m], variable
-        self.parking_distance = .25 # meters; try playing with this number!
+        self.lookahead = 0.4 # [m], variable
+        self.parking_distance = .45 # meters; try playing with this number!
         self.relative_x = 0
         self.relative_y = 0
 
@@ -37,8 +37,8 @@ class ParkingController():
         self.relative_y = msg.y_pos
         drive_cmd = AckermannDriveStamped()
 
-        print('Relative x: ' + str(self.relative_x))
-        print('Relative y:' + str(self.relative_y))
+        #  print('Relative x: ' + str(self.relative_x))
+        # print('Relative y:' + str(self.relative_y))
 
         #################################
 
